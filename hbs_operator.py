@@ -231,13 +231,16 @@ class HBSOperator:
 
     def put_box(self, xpos, zpos):
         """ Put box into a storage place. """
-        z_over = zpos * 2
-        z_under = z_over - 1
-        self.move_ypos(YPos.DEFAULT)
-        self.move_xzpos(xpos, z_over)
-        self.move_ypos(YPos.STORE)
-        self.move_zpos(z_under)
-        self.move_ypos(YPos.DEFAULT)
+        try:
+            z_over = zpos * 2
+            z_under = z_over - 1
+            self.move_ypos(YPos.DEFAULT)
+            self.move_xzpos(xpos, z_over)
+            self.move_ypos(YPos.STORE)
+            self.move_zpos(z_under)
+            self.move_ypos(YPos.DEFAULT)
+        except Exception as e:
+            print(f'Exception at put_box: {e}')
 
     def get_box(self, xpos, zpos):
         """ Get a new box from a storage place. """
@@ -269,8 +272,8 @@ class HBSOperator:
         try:
             self.get_new_box()
             self.put_box(xpos, zpos)
-        except:
-            print("Something went wrong in store_box")
+        except Exception as e:
+            print(f'Exception at store_box: {e}')
             self.stop_motion()
 
     def restore_box(self, old_xpos: int, old_zpos: int, xpos: int, zpos: int):

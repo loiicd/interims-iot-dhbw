@@ -89,12 +89,11 @@ class HighBayStorage:
 
     def store_box_ascending(self):
         """Puts box in first free storage place ascending"""
-        if not self.hbs_is_full:    # check if at least one free place is available
+        if not self.hbs_is_full():    # check if at least one free place is available
             for box_nr in range(1, 51):  # from 1 to 51
                 if not self.storage_places[box_nr]['taken']:
                     try:
-                        self.op.store_box(self.storage_places[box_nr]['x'],
-                                          self.storage_places[box_nr]['z'])
+                        self.op.store_box(self.storage_places[box_nr]['x'], self.storage_places[box_nr]['z'])
                         self.occupy_place(box_nr)
                         return
                     except Exception as e:
@@ -115,7 +114,7 @@ class HighBayStorage:
 
     def store_box_random(self):
         """Puts box in random storage place"""
-        if not self.hbs_is_full:    # check if at least one free place is available
+        if not self.hbs_is_full():    # check if at least one free place is available
             place_found = False
             while not place_found:
                 box_nr_random = random.randrange(1, 51)
