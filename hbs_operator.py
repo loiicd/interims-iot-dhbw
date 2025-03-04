@@ -154,69 +154,80 @@ class HBSOperator:
         """ Not fully implemented.
         Stops the operator when the target position is reached.
         Currently only with an x_pos check to test interrupts. """
-        if self.soll_x == self.get_xpos():
-            print("Stop motion interrupt")
-            self.stop_motion()
+        try:
+            if self.soll_x == self.get_xpos():
+                print("Stop motion interrupt")
+                self.stop_motion()
+        except Exception as e:
+            print(f'Exception at stop_if_target_reached: {e}')
 
     def move_ypos(self, a_ypos: YPos):
         """ Move the operator to the y-axis position a_ypos"""
-        l_ypos = self.get_ypos()
+        try:
+            l_ypos = self.get_ypos()
 
-        if l_ypos.value > a_ypos.value:
-            self.io.set_port(0, 4, True)
-        elif l_ypos.value < a_ypos.value:
-            self.io.set_port(0, 3, True)
-        # ypos is already at y_xpos
-        else:
-            return
-        # polling for 5s
-        t_end = time.time() + 5
-        while time.time() < t_end:
-            if self.get_ypos() is a_ypos:
-                self.stop_motion()
+            if l_ypos.value > a_ypos.value:
+                self.io.set_port(0, 4, True)
+            elif l_ypos.value < a_ypos.value:
+                self.io.set_port(0, 3, True)
+            # ypos is already at y_xpos
+            else:
                 return
-        self.stop_motion()
+            # polling for 5s
+            t_end = time.time() + 5
+            while time.time() < t_end:
+                if self.get_ypos() is a_ypos:
+                    self.stop_motion()
+                    return
+            self.stop_motion()
+        except Exception as e:
+            print(f'Exception at move_ypos: {e}')
 
     def move_zpos(self, target_zpos: int):
         """ Move the operator over/under the z-axis position a_zpos. """
-        if not 1 <= target_zpos <= 10:
-            print("target_xpos of ", target_zpos, " is not allowed. Only 1 to 10 is allowed.")
-            return
-        current_zpos = self.get_zpos()
-
-        if target_zpos < current_zpos:
-            self.io.set_port(0, 6, True)
-        else:
-            self.io.set_port(0, 5, True)
-        # polling for 10s
-        t_end = time.time() + 10
-        while time.time() < t_end:
-            if target_zpos == self.get_zpos():
-                self.stop_motion()
+        try:
+            if not 1 <= target_zpos <= 10:
+                print("target_xpos of ", target_zpos, " is not allowed. Only 1 to 10 is allowed.")
                 return
-        self.stop_motion()
+            current_zpos = self.get_zpos()
+
+            if target_zpos < current_zpos:
+                self.io.set_port(0, 6, True)
+            else:
+                self.io.set_port(0, 5, True)
+            # polling for 10s
+            t_end = time.time() + 10
+            while time.time() < t_end:
+                if target_zpos == self.get_zpos():
+                    self.stop_motion()
+                    return
+            self.stop_motion()
+        except Exception as e:
+            print(f'Exception at move_zpos: {e}')
 
     def get_new_box(self):
         """ Get a new box from the input-station. """
         try:
-        self.move_ypos(YPos.DEFAULT)
-        self.move_xzpos(10, 1)
-        # Start the input-station
-        self.io.set_port(1, 0, True)
-        self.io.set_port(1, 2, True)
+            self.move_ypos(YPos.DEFAULT)
+            self.move_xzpos(10, 1)
+            # Start the input-station
+            self.io.set_port(1, 0, True)
+            self.io.set_port(1, 2, True)
 
-        # Polling für 5s
-        t_end = time.time() + 5
-        while time.time() < t_end:
-            if not self.io.read_port(3)[1]:
-                time.sleep(0.3)
-                # Stop the input-station
-                self.io.set_port(1, 0, False)
-                self.io.set_port(1, 2, False)
-                break
-        self.move_ypos(YPos.DESTORE)
-        self.move_zpos(2)
-        self.move_ypos(YPos.DEFAULT)
+            # Polling für 5s
+            t_end = time.time() + 5
+            while time.time() < t_end:
+                if not self.io.read_port(3)[1]:
+                    time.sleep(0.3)
+                    # Stop the input-station
+                    self.io.set_port(1, 0, False)
+                    self.io.set_port(1, 2, False)
+                    break
+            self.move_ypos(YPos.DESTORE)
+            self.move_zpos(2)
+            self.move_ypos(YPos.DEFAULT)
+        except Exception as e:
+            print(f'Exception at get_new_box: {e}')
 
     def put_box(self, xpos, zpos):
         """ Put box into a storage place. """

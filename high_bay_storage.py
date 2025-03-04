@@ -97,8 +97,8 @@ class HighBayStorage:
                                           self.storage_places[box_nr]['z'])
                         self.occupy_place(box_nr)
                         return
-                    except:
-                        print("ooops, something went wrong!")
+                    except Exception as e:
+                        print(f'Error at store_box_ascending: {e}')
 
     def destore_box_ascending(self):
         """Destores box from first free storage place ascending"""
@@ -187,109 +187,3 @@ class HighBayStorage:
         with open('/home/pi/iot/obj/storage_places_new.pkl', 'rb') as f:
             self.storage_places = pickle.load(f)
             print(self.storage_places)
-
-
-def check_health(self) -> dict:
-    """
-    Überprüft den Gesundheitsstatus des Hochregallager-Systems.
-    Gibt ein Dictionary mit Statusangaben und eventuellen Fehlern zurück.
-    """
-    health_report = {
-        "status": "healthy",
-        "components": {
-            "storage_file": {"status": "unknown", "message": ""},
-            "operator": {"status": "unknown", "message": ""},
-            "statistics": {}
-        }
-    }
-    
-    # Prüfe Dateizugriff
-    try:
-        # Versuche zu laden und direkt wieder zu speichern
-        self.load_from_file()
-        self.save_to_file()
-        health_report["components"]["storage_file"]["status"] = "healthy"
-        health_report["components"]["storage_file"]["message"] = "Dateizugriff erfolgreich"
-    except Exception as e:
-        health_report["status"] = "warning"
-        health_report["components"]["storage_file"]["status"] = "error"
-        health_report["components"]["storage_file"]["message"] = f"Dateizugriffsfehler: {str(e)}"
-    
-    # Prüfe Operator
-    try:
-        # Lese aktuelle Position ohne Bewegung auszuführen
-        xpos = self.op.get_xpos()
-        ypos = self.op.get_ypos()
-        zpos = self.op.get_zpos()
-        if all(pos is not None for pos in [xpos, ypos, zpos]):
-            health_report["components"]["operator"]["status"] = "healthy"
-            health_report["components"]["operator"]["message"] = f"Operator aktiv (Position: X={xpos}, Y={ypos.name}, Z={zpos})"
-        else:
-            health_report["status"] = "warning"
-            health_report["components"]["operator"]["status"] = "warning"
-            health_report["components"]["operator"]["message"] = "Operator aktiv aber Position nicht vollständig lesbar"
-    except Exception as e:
-        health_report["status"] = "error"
-        health_report["components"]["operator"]["status"] = "error"
-        health_report["components"]["operator"]["message"] = f"Operatorfehler: {str(e)}"
-    
-    # Sammle Statistiken über den Lagerbestand
-    total_places = len(self.storage_places)
-    occupied_places = sum(1 for place in self.storage_places.values() if place['taken'])
-    free_places = total_places - occupied_places
-    oldest_timestamp = None
-    newest_timestamp = None
-    
-    for place in self.storage_places.values():
-        if place['taken'] and place['timestamp']:
-            if oldest_timestamp is None or place['timestamp'] < oldest_timestamp:
-                oldest_timestamp = place['timestamp']
-            if newest_timestamp is None or place['timestamp'] > newest_timestamp:
-                newest_timestamp = place['timestamp']
-    
-    health_report["components"]["statistics"] = {
-        "total_places": total_places,
-        "occupied_places": occupied_places,
-        "free_places": free_places,
-        "occupancy_percentage": round((occupied_places / total_places) * 100, 1) if total_places > 0 else 0,
-        "oldest_box_stored_at": time.ctime(oldest_timestamp) if oldest_timestamp else None,
-        "newest_box_stored_at": time.ctime(newest_timestamp) if newest_timestamp else None
-    }
-    
-    return health_report
-
-def print_health_report(self):
-    """Druckt einen formatierten Gesundheitsbericht des Systems"""
-    report = self.check_health()
-    
-    print("\n===== Hochregallager Gesundheitsbericht =====")
-    
-    # Gesamtstatus
-    print(f"Gesamtstatus: {report['status'].upper()}")
-    
-    # Speicherdatei
-    storage_status = report['components']['storage_file']
-    print(f"\nSpeicherdatei: {storage_status['status'].upper()}")
-    if storage_status['message']:
-        print(f"  {storage_status['message']}")
-    
-    # Operator
-    operator_status = report['components']['operator']
-    print(f"\nOperator: {operator_status['status'].upper()}")
-    if operator_status['message']:
-        print(f"  {operator_status['message']}")
-    
-    # Statistiken
-    stats = report['components']['statistics']
-    print("\nLagerstatistik:")
-    print(f"  Gesamtplätze: {stats['total_places']}")
-    print(f"  Belegte Plätze: {stats['occupied_places']}")
-    print(f"  Freie Plätze: {stats['free_places']}")
-    print(f"  Belegung: {stats['occupancy_percentage']}%")
-    
-    if stats['oldest_box_stored_at']:
-        print(f"  Älteste Box eingelagert am: {stats['oldest_box_stored_at']}")
-    if stats['newest_box_stored_at']:
-        print(f"  Neueste Box eingelagert am: {stats['newest_box_stored_at']}")
-        
-    print("\n===========================================")

@@ -10,7 +10,6 @@ class Operations(Enum):
     STORE_ASCENDING = 5
     DESTORE_ASCENDING = 6
     DESTORE_OLDEST = 7
-    HEALTH = 8
 
 
 class MqttCommand:

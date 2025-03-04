@@ -87,11 +87,3 @@ class MqttSubscriber:
         elif command.operation == Operations.DESTORE_OLDEST:
             print(f"{command.operation}")
             self.hbs.destore_oldest()
-        elif command.operation == Operations.HEALTH:
-            print(f"{command.operation}")
-            health_report = self.hbs.check_health()
-            # Veröffentliche das Ergebnis über MQTT
-            health_json = json.dumps(health_report)
-            self.mqtt.publish("hochregallager/health", health_json)
-            # Optional: Auch auf der Konsole ausgeben
-            self.hbs.print_health_report()
