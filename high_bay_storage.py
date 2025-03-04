@@ -17,8 +17,7 @@ class HighBayStorage:
         if Path('./obj/storage_places_new.pkl').is_file():   # check if file exists
             try:                                                        # try to load file
                 self.load_from_file()                                   #
-                self.print_all()                                      # optional: print all file entries in terminal
-
+                # self.print_all()                                      # optional: print all file entries in terminal
             except:                             # file exists but is not loadable
                 print("Could not load data")    # print error message in terminal
         else:   # file does not exist (e.g. first start ) -> prepare storage_places dict and save to file
@@ -31,7 +30,7 @@ class HighBayStorage:
                 self.storage_places[box_nr] = {'x': x_pos, 'z': z_pos, 'taken': False, 'timestamp': None}
                 x_pos += 1
             self.save_to_file()             # save
-            self.print_all()              # optional: print all file entries in terminal
+            # self.print_all()              # optional: print all file entries in terminal
 
     def occupy_place(self, place_nr):
         """ change box-status taken on 'true' and save timestamp"""
@@ -174,15 +173,15 @@ class HighBayStorage:
 
     def save_to_file(self):
         """writes storage_places dict into file"""
-        with open('/home/pi/iot/obj/storage_places_new.pkl', 'wb') as f:
+        with open('./obj/storage_places_new.pkl', 'wb') as f:
             pickle.dump(self.storage_places, f, pickle.HIGHEST_PROTOCOL)
 
     def load_from_file(self):
         """read storage_places dict from file"""
-        with open('/home/pi/iot/obj/storage_places_new.pkl', 'rb') as f:
+        with open('./obj/storage_places_new.pkl', 'rb') as f:
             self.storage_places = pickle.load(f)
             
     def print_all(self):
-        with open('/home/pi/iot/obj/storage_places_new.pkl', 'rb') as f:
+        with open('./obj/storage_places_new.pkl', 'rb') as f:
             self.storage_places = pickle.load(f)
             print(self.storage_places)
