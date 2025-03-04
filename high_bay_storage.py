@@ -17,7 +17,7 @@ class HighBayStorage:
         if Path('./obj/storage_places_new.pkl').is_file():   # check if file exists
             try:                                                        # try to load file
                 self.load_from_file()                                   #
-                # self.print_all()                                      # optional: print all file entries in terminal
+                self.print_all()                                      # optional: print all file entries in terminal
 
             except:                             # file exists but is not loadable
                 print("Could not load data")    # print error message in terminal
@@ -31,7 +31,7 @@ class HighBayStorage:
                 self.storage_places[box_nr] = {'x': x_pos, 'z': z_pos, 'taken': False, 'timestamp': None}
                 x_pos += 1
             self.save_to_file()             # save
-            # self.print_all()              # optional: print all file entries in terminal
+            self.print_all()              # optional: print all file entries in terminal
 
     def occupy_place(self, place_nr):
         """ change box-status taken on 'true' and save timestamp"""
