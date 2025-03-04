@@ -7,11 +7,11 @@ import json
 
 class MqttSubscriber:
     """class for the mqtt connection"""
-    server_ip = '192.168.1.124'
+    server_ip = '192.168.178.40'
     server_port = 1883
     topic = "hochregallager/set"
-    mqtt_username = 'iot'
-    mqtt_password = 'iot'
+    mqtt_username = 'dhbw-mqtt'
+    mqtt_password = 'daisy56'
     mqtt = object
     hbs = object
 

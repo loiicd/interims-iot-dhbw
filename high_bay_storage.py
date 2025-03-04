@@ -14,7 +14,7 @@ class HighBayStorage:
 
     def __init__(self, operator):       # expects hbs_operator as argument
         self.op = operator              # saves operator as static class element
-        if Path('/home/pi/iot/obj/storage_places_new.pkl').is_file():   # check if file exists
+        if Path('./obj/storage_places_new.pkl').is_file():   # check if file exists
             try:                                                        # try to load file
                 self.load_from_file()                                   #
                 # self.print_all()                                      # optional: print all file entries in terminal
