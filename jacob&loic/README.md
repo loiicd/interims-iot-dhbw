@@ -15,9 +15,10 @@ mqtt_subscriber.py -> kopiert von altem Projekt
 
 ## Operators
 
-Es gibt 2x Arten von Operatoren:
+Es gibt 3x Arten von Operatoren:
 1. [Conveyor Belt Operator](./src/operators/conveyor_belt_operator.py)
 2. [Turn Table Operator](./src/operators/turn_table_operator.py)
+3. [Sensor Operator](./src/operators/sensor_operator.py)
 
 Ein Operator definiert nur die Grundfunktionen, nicht aber das Objekt an sich. Dafür muss ein Operator mit den richtigen Ports definiert werden.
 
@@ -34,3 +35,6 @@ Es gibt einen [Entry Route](./src/entry_route.py) Controller. Dieser steuert die
 entryRoute = EntryRoute(io, operators)
 entryRoute.moveBox()
 ```
+
+## Plan
+![Project Plan](./assets/plan.png)

@@ -2,16 +2,9 @@ from enum import Enum
 from io_extension import IOExtension
 
 
-class ConveyorBeltLength(Enum):
-  SHORT = "short"
-  MEDIUM = "medium"
-  LONG = "long"
-
-
 class ConveyorBeltOperator:
   def __init__(self, io_extension: IOExtension, length: str, port: int):
     self.io = io_extension
-    self.length = ConveyorBeltLength[length]
     self.port = port
     self.spin: bool = False
 

@@ -1,11 +1,12 @@
 from operators.conveyor_belt_operator import ConveyorBeltOperator
-from operators.turn_table_operator import TurnTableOperator
+from operators.turn_table_operator import TurnTableOperator#
+from operators.sensor_operator import SensorOperator
 from io_extension import IOExtension
 from typing import Dict, Union
 
 
 class EntryRoute:
-  def __init__(self, io_extension: IOExtension, operators: Dict[str, Union[ConveyorBeltOperator, TurnTableOperator]]):
+  def __init__(self, io_extension: IOExtension, operators: Dict[str, Union[ConveyorBeltOperator, TurnTableOperator, SensorOperator]]):
     self.io = io_extension
     self.operators = operators
 
@@ -16,11 +17,11 @@ class EntryRoute:
 
   def moveBox(self):
     """ Move a box through the entry route """
-    self.operators["conveyor_belt_1"].start()
-    self.operators["conveyor_belt_2"].start()
-    self.operators["conveyor_belt_3"].start()
-    self.operators["conveyor_belt_4"].start()
-    self.operators["conveyor_belt_1"].stop()
-    self.operators["conveyor_belt_2"].stop()
-    self.operators["conveyor_belt_3"].stop()
-    self.operators["conveyor_belt_4"].stop()
+
+    if (self.operators["sensor_1"].getState()):
+      self.operators["conveyor_belt_1"].start()  
+    else:
+      print("No box detected on sensor 1")
+
+    while (self.operators["sensor_5"].getState() or self.operators["sensor_6"].getState() or self.operators["sensor_7"].getState()):
+      self.operators["conveyor_belt_3"].start()
