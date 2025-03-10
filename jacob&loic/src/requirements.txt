@@ -1,0 +1,4 @@
+paho-mqtt>=1.5.0
+python-dotenv>=0.19.0
+smbus>=1.1.post2
+RPi.GPIO>=0.7.0
