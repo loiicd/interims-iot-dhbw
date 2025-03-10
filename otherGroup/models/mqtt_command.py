@@ -1,6 +1,7 @@
 from enum import Enum
 
 
+
 class Operations(Enum):
     DESTORE = 0
     STORE = 1

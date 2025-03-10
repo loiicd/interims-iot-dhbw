@@ -8,12 +8,13 @@ from mqtt_subscriber import MqttSubscriber
 io = IOExtension()
 
 operators = {
-  "conveyor_belt_1": ConveyorBeltOperator(io, 1, 0),
-  "conveyor_belt_2": ConveyorBeltOperator(io, 3, 0),
-  "conveyor_belt_3": ConveyorBeltOperator(io, 2, 0),
-  "turn_table_1": TurnTableOperator(io, 0),
+  "conveyor_belt_1": ConveyorBeltOperator(io, "short", 0),
+  "conveyor_belt_2": ConveyorBeltOperator(io, "short", 0),
+  "conveyor_belt_3": ConveyorBeltOperator(io, "short", 0),
+  "conveyor_belt_4": ConveyorBeltOperator(io, "large", 0),
+  "turn_table": TurnTableOperator(io, 0),
 }
 
 entryRoute = EntryRoute(io, operators)
-entryRoute.init()
+entryRoute.initialize()
 MqttSubscriber(entryRoute)
